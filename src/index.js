@@ -96,9 +96,10 @@ function calculator(number = 0) {
             return args.reduce((a, b) => a - b, number);
         },
         div: function(...args) {
-            if (args.includes(0)) throw new Error("division by 0");
-
-            return args.reduce((a, b) => a / b, number);
+            return args.reduce((a, b) => {
+                if (b) return a / b;
+                else throw new Error("division by 0");
+            }, number);
         },
         mul: function(...args) {
             return args.reduce((a, b) => a * b, number);
