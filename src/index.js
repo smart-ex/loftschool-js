@@ -29,14 +29,15 @@ function map(array, fn) {
  Напишите аналог встроенного метода reduce для работы с массивами
  */
 function reduce(array, fn, initial) {
-    var accumulator = initial === undefined ? undefined : initial;
-
-    for (var i = 0; i < array.length; i++) {
-        if (accumulator !== undefined) {
-            accumulator = fn(accumulator, array[i], i, array);
-        } else {
-            accumulator = array[i];
-        }
+    if (initial === undefined) {
+        var accumulator = array[0];
+        var i = 1;
+    } else {
+        accumulator = initial;
+        i = 0;
+    }
+    for (i; i < array.length; i++) {
+        accumulator = fn(accumulator, array[i], i, array);
     }
 
     return accumulator;
@@ -47,9 +48,7 @@ function reduce(array, fn, initial) {
  Функция должна удалить указанное свойство из указанного объекта
  */
 function deleteProperty(obj, prop) {
-
     return delete obj[prop];
-      
 }
 
 /*
@@ -57,19 +56,34 @@ function deleteProperty(obj, prop) {
  Функция принимает объект и имя свойства и возвращает true или false
  Функция должна проверить существует ли укзаанное свойство в указанном объекте
  */
-function hasProperty(obj, prop) {}
+function hasProperty(obj, prop) {
+    return prop in obj;
+}
 
 /*
  Задача 6:
  Функция должна получить все перечисляемые свойства объекта и вернуть их в виде массива
  */
-function getEnumProps(obj) {}
+function getEnumProps(obj) {
+    var arr = [];
+    
+    for (var props in obj) {
+        arr.push(props);
+    }
+    return arr;
+}
 
 /*
  Задача 7:
  Функция должна перебрать все свойства объекта, преобразовать их имена в верхний регистра и вернуть в виде массива
  */
-function upperProps(obj) {}
+function upperProps(obj) {
+    var arr = [];
+    for (var props in obj) {
+        arr.push(props);
+    }
+    return arr.map(a => a.toUpperCase());
+}
 
 /*
  Задача 8 *:
