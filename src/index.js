@@ -66,13 +66,13 @@ function hasProperty(obj, prop) {
  */
 function getEnumProps(obj) {
     var arr = [];
-    
+
     for (var props in obj) {
         arr.push(props);
     }
     return arr;
 }
- 
+
 /*
  Задача 7:
  Функция должна перебрать все свойства объекта, преобразовать их имена в верхний регистра и вернуть в виде массива
@@ -89,14 +89,45 @@ function upperProps(obj) {
  Задача 8 *:
  Напишите аналог встроенного метода slice для работы с массивами
  */
-function slice(array, from, to) {}
+function slice(array, from, to) {
+    var i,
+        size,
+        res = [],
+        len = array.length,
+        start = from === undefined ? 0 : from,
+        end = to === undefined ? len : to;
+
+    if (to < 0) end = len + to;
+
+    if (start < -len) start = 0;
+
+    if (end > len) end = len;
+
+    start = start >= 0 ? start : len + start;
+    size = end - start;
+    if (size > 0) {
+        for (i = start; i < end; i++) {
+            res.push(array[i]);
+        }
+    }
+
+    return res;
+}
 
 /*
  Задача 9 *:
  Функция принимает объект и должна вернуть Proxy для этого объекта
  Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
  */
-function createProxy(obj) {}
+function createProxy(obj) {
+    return new Proxy(obj, {
+        set(target, prop, value) {
+            target[prop] = value * value;
+
+            return true;
+        }
+    });
+}
 
 export {
     forEach,
