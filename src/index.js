@@ -150,25 +150,25 @@ function deleteTextNodesRecursive(where) {
  */
 function collectDOMStat(root) {
     var obj = { tags: {}, classes: {}, texts: 0 },
-          tags = obj.tags,
-          classes = obj.classes
+        tags = obj.tags,
+        classes = obj.classes;
 
     function collectTags(node) {
         var tag = node.tagName;
-        tags.hasOwnProperty(tag) ? tags[tag] += 1  : tags[tag] = 1
+        tags.hasOwnProperty(tag) ? (tags[tag] += 1) : (tags[tag] = 1);
     }
     function collectClasses(node) {
-        node.classList.forEach((classname) => {
-            classes.hasOwnProperty(classname) ? classes[classname] += 1 : classes[classname] = 1 
-           })
+        node.classList.forEach(classname => {
+            classes.hasOwnProperty(classname)
+                ? (classes[classname] += 1)
+                : (classes[classname] = 1);
+        });
     }
     function collectStat(nodes) {
-                   
-
         if (root.hasChildNodes()) {
             var childs = nodes.childNodes;
 
-                childs.forEach( (node) => {
+            childs.forEach(node => {
                 if (node.nodeType == document.TEXT_NODE) {
                     obj.texts++;
                 } else {
@@ -176,7 +176,7 @@ function collectDOMStat(root) {
                     collectClasses(node);
                     collectStat(node);
                 }
-            })
+            });
         }
     }
 
@@ -215,7 +215,24 @@ function collectDOMStat(root) {
  *   nodes: [div]
  * }
  */
-function observeChildNodes(where, fn) {}
+function observeChildNodes(where, fn) {
+    var args = {};
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+                args.type = "insert";
+                args.nodes = [].slice.call(mutation.addedNodes);
+            }
+            if (mutation.removedNodes.length) {
+                args.type = "remove";
+                args.nodes = [].slice.call(mutation.removedNodes);
+            }
+            fn(args);
+        });
+    });
+
+    observer.observe(where, { childList: true });
+}
 
 export {
     createDivWithText,
