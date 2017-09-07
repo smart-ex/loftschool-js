@@ -148,7 +148,41 @@ function deleteTextNodesRecursive(where) {
  *   texts: 3
  * }
  */
-function collectDOMStat(root) {}
+function collectDOMStat(root) {
+    var obj = { tags: {}, classes: {}, texts: 0 },
+          tags = obj.tags,
+          classes = obj.classes
+
+    function collectTags(node) {
+        var tag = node.tagName;
+        tags.hasOwnProperty(tag) ? tags[tag] += 1  : tags[tag] = 1
+    }
+    function collectClasses(node) {
+        node.classList.forEach((classname) => {
+            classes.hasOwnProperty(classname) ? classes[classname] += 1 : classes[classname] = 1 
+           })
+    }
+    function collectStat(nodes) {
+                   
+
+        if (root.hasChildNodes()) {
+            var childs = nodes.childNodes;
+
+                childs.forEach( (node) => {
+                if (node.nodeType == document.TEXT_NODE) {
+                    obj.texts++;
+                } else {
+                    collectTags(node);
+                    collectClasses(node);
+                    collectStat(node);
+                }
+            })
+        }
+    }
+
+    collectStat(root);
+    return obj;
+}
 
 /**
  * *** Со звездочкой ***
