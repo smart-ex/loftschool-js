@@ -23,31 +23,25 @@ let homeworkContainer = document.querySelector("#homework-container");
  * @return {Element}
  */
 function createDiv() {
-	var getRandomColor = () => {
-		var letters = "0123456789ABCDEF",
-			color = "#";
-
-		for (var i = 0; i < 6; i++) {
-			color += letters[Math.floor(Math.random() * 16)];
-		}
-
-		return color;
-	};
-	var getRandomSize = () => Math.floor(Math.random() * 500);
-	let res = document.createElement("div");
-	var cssString =
-		"position: absolute; width: " +
-		getRandomSize() +
-		"px;height: " +
-		getRandomSize() +
-		"px;top: " +
-		getRandomSize() +
-		"px;left: " +
-		getRandomSize() +
-		"px;background-color: " +
-		getRandomColor() +
-		";";
-	res.setAttribute('draggable', true)
+	var getRandomInt = max => Math.floor(Math.random() * max),
+		res = document.createElement("div"),
+		cssString =
+			"width: " +
+			getRandomInt(500) +
+			"px;height: " +
+			getRandomInt(500) +
+			"px;top: " +
+			getRandomInt(500) +
+			"px;left: " +
+			getRandomInt(500) +
+			"px;background-color: rgb(" +
+			getRandomInt(255) +
+			"," +
+			getRandomInt(255) +
+			"," +
+			getRandomInt(255) +
+			", 0.8);";
+	res.setAttribute("draggable", true);
 	res.className = "draggable-div";
 	res.style.cssText += cssString;
 	return res;
@@ -58,10 +52,46 @@ function createDiv() {
  *
  * @param {Element} target
  */
-function addListeners(target) {}
+function addListeners(target) {
+	var offset = function(el) {
+		var rect = el.getBoundingClientRect();
 
-let addDivButton = homeworkContainer.querySelector("#addDiv");
+		return {
+			top: rect.top + document.body.scrollTop,
+			left: rect.left + document.body.scrollLeft
+		};
+	};
 
+	target.addEventListener("mousedown", e => {
+		var el = e.target,
+			startPosition = {
+				top: e.pageY - offset(el).top,
+				left: e.pageX - offset(el).left
+			}
+
+		el.classList.add("active");
+		document.addEventListener("mousemove", e => {
+		var active = document.querySelector(".active");
+			active.style.top = e.pageY - startPosition.top + 'px';
+			active.style.left = e.pageX - startPosition.left + 'px';
+
+			
+			active.addEventListener("mouseup", function(){
+				active.classList.remove("active")
+			}
+			);
+		});
+
+	});
+}
+
+let addDivButton = homeworkContainer.querySelector("#addDiv"),
+	style = document.createElement("style"),
+	css =
+		".draggable-div{cursor: move; user-select: none; border: 1px solid #757575; border-radius: 10px;\
+			box-shadow: 5px 5px 10px #00000080;position: absolute;-moz-user-select: none;-moz-user-drag: element;} .active{opacity: 0.6}";
+style.appendChild(document.createTextNode(css));
+homeworkContainer.appendChild(style);
 addDivButton.addEventListener("click", function() {
 	// создать новый div
 	let div = createDiv();
