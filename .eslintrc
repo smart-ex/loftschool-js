@@ -49,12 +49,8 @@
       }
     ],
     "no-nested-ternary": "error",
-    "no-tabs": "error",
+    "no-tabs": false,
     "one-var-declaration-per-line": "error",
-    "quotes": [
-      "error",
-      "single"
-    ],
     "max-statements-per-line": [
       "error",
       {
