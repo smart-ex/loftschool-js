@@ -7,6 +7,9 @@
  * @return {Promise}
  */
 function delayPromise(seconds) {
+    return new Promise(resolve => {
+        setTimeout(() => resolve(), seconds * 1000);
+    });
 }
 
 /**
@@ -17,9 +20,14 @@ function delayPromise(seconds) {
  * @return {Promise<Array<{name: String}>>}
  */
 function loadAndSortTowns() {
+    return fetch(
+        "https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json"
+    ).then(response =>
+        response
+            .json()
+            .then(data => data.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)))
+    );
+    
 }
 
-export {
-    delayPromise,
-    loadAndSortTowns
-};
+export { delayPromise, loadAndSortTowns };
