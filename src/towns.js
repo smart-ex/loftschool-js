@@ -27,7 +27,7 @@
  * @example
  * homeworkContainer.appendChild(...);
  */
-let homeworkContainer = document.querySelector('#homework-container');
+let homeworkContainer = document.querySelector("#homework-container");
 
 /**
  * Функция должна загружать список городов из https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json
@@ -35,7 +35,36 @@ let homeworkContainer = document.querySelector('#homework-container');
  *
  * @return {Promise<Array<{name: string}>>}
  */
+
 function loadTowns() {
+    return fetch(
+        "https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json"
+    )
+        .then(function(response) {
+            return !response.ok ? response.error() : response;
+        })
+        .then(response =>
+            response
+                .json()
+                .then(data =>
+                    data.sort(
+                        (a, b) =>
+                            a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+                    )
+                )
+        )
+        .catch(function(err) {
+            let button = document.createElement("button");
+            button.addEventListener("click", () =>
+                filterInput.dispatchEvent(new Event("keyup"))
+            );
+            button.append("Повторить загрузку");
+            filterResult.append(
+                "Не удалось загрузить города",
+                document.createElement("br")
+            );
+            filterResult.append(button);
+        });
 }
 
 /**
@@ -52,18 +81,31 @@ function loadTowns() {
  * @return {boolean}
  */
 function isMatching(full, chunk) {
+    let str = full.toUpperCase(),
+        req = chunk.toUpperCase();
+
+    return chunk ? str.includes(req) : false;
 }
 
-let loadingBlock = homeworkContainer.querySelector('#loading-block');
-let filterBlock = homeworkContainer.querySelector('#filter-block');
-let filterInput = homeworkContainer.querySelector('#filter-input');
-let filterResult = homeworkContainer.querySelector('#filter-result');
-let townsPromise;
+let loadingBlock = homeworkContainer.querySelector("#loading-block");
+let filterBlock = homeworkContainer.querySelector("#filter-block");
+let filterInput = homeworkContainer.querySelector("#filter-input");
+let filterResult = homeworkContainer.querySelector("#filter-result");
 
-filterInput.addEventListener('keyup', function() {
+filterInput.addEventListener("keyup", function(e) {
+    filterResult.innerHTML = "";
+    loadTowns().then(towns => {
+        loadingBlock.style.display = "none";
+        filterBlock.style.display = "block";
+        towns.forEach(element => {
+            if (isMatching(element.name, e.target.value)) {
+                let item = document.createElement("div");
+
+                item.innerText = element.name;
+                filterResult.appendChild(item);
+            }
+        });
+    });
 });
 
-export {
-    loadTowns,
-    isMatching
-};
+export { loadTowns, isMatching };
