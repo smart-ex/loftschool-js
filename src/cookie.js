@@ -32,7 +32,7 @@
  * @example
  * homeworkContainer.appendChild(...);
  */
-
+import { createCookie, deleteCookie } from "./index.js";
 let homeworkContainer = document.querySelector("#homework-container"),
     filterNameInput = homeworkContainer.querySelector("#filter-name-input"),
     addNameInput = homeworkContainer.querySelector("#add-name-input"),
@@ -40,14 +40,6 @@ let homeworkContainer = document.querySelector("#homework-container"),
     addButton = homeworkContainer.querySelector("#add-button"),
     listTable = homeworkContainer.querySelector("#list-table tbody"),
     cookies = {};
-
-function createCookie(name, value) {
-    document.cookie = `${name}=${value}`;
-}
-
-function deleteCookie(name) {
-    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-}
 
 function getCookies() {
     return document.cookie
@@ -101,7 +93,10 @@ addButton.addEventListener("click", () => {
 
     createCookie(name, value);
     cookies = getCookies();
-    if (!name.includes(filterNameInput.value) && !value.includes(filterNameInput.value)) {
+    if (
+        !name.includes(filterNameInput.value) &&
+        !value.includes(filterNameInput.value)
+    ) {
         delete cookies[name];
     }
     renderTable(cookies);
