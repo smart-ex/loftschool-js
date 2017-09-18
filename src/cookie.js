@@ -41,6 +41,7 @@ let homeworkContainer = document.querySelector("#homework-container"),
     listTable = homeworkContainer.querySelector("#list-table tbody"),
     cookies = {};
 
+// создаем объект со всеми куками
 function getCookies() {
     return document.cookie
         .split("; ")
@@ -53,6 +54,7 @@ function getCookies() {
         }, {});
 }
 
+// создаем строку tr с именем и значением куки, если уже есть - то обновляем значение
 function cookieTr(name, value) {
     var tr = document.createElement("tr"),
         deleteButton = document.createElement("button");
@@ -72,6 +74,8 @@ function cookieTr(name, value) {
         listTable.append(tr);
     }
 }
+
+// Рэндерим таблицу из объекта с куками, учитывая значание filterNameInput
 function renderTable(cookies = getCookies()) {
     listTable.innerHTML = "";
     for (let name in cookies) {
@@ -83,6 +87,7 @@ function renderTable(cookies = getCookies()) {
         }
     }
 }
+
 renderTable();
 
 filterNameInput.addEventListener("keyup", () => renderTable());
@@ -97,11 +102,13 @@ addButton.addEventListener("click", () => {
         !name.includes(filterNameInput.value) &&
         !value.includes(filterNameInput.value)
     ) {
+        // удаляем из таблицы куку если нет в filterNameInput
         delete cookies[name];
     }
     renderTable(cookies);
 });
 
+// при нажатии кнопки удаляем куку из браузера и таблицы
 listTable.addEventListener(
     "click",
     e => {
